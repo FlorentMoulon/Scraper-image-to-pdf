@@ -118,17 +118,27 @@ def images_to_pdf(folder_path, output_pdf_path):
   print(f"PDF created successfully at {output_pdf_path}")
 
 
+def find_available_number():
+  first_number_available = 0
+  while (os.path.exists(os.path.join(OUTPUT_FOLDER_PATH, OUTPUT_PDF_NAME+"_"+formatted_number(len(LINKS),first_number_available)+".pdf"))):
+    first_number_available += 1
+  return first_number_available
+
+
 def main():
   init()
   
-  for i in range(len(LINKS)):
-    image_links = extract_image_links(LINKS[i])
+  first_number_available = find_available_number()
+  
+  for i in range(first_number_available, len(LINKS)+first_number_available):
+    image_links = extract_image_links(LINKS[i-first_number_available])
     clear_temporary_folder()
     download_images(image_links)
     
     images_to_pdf(TEMPORARY_FOLDER_PATH, os.path.join(OUTPUT_FOLDER_PATH, OUTPUT_PDF_NAME+"_"+formatted_number(len(LINKS),i)+".pdf"))
     print("\n \n")
   
+  print("All PDFs created successfully.")
 
 
 main()
